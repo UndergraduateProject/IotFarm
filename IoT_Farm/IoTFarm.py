@@ -5,6 +5,7 @@ import adafruit_dht
 from board import *
 import spidev
 from numpy import interp
+import RPi.GPIO as GPIO
 
 DHT_PIN = D4  # DHT連GPIO4
 DHT_SENSOR = adafruit_dht.DHT22(DHT_PIN, use_pulseio=False)  # 定義DHT_SENSOR為DHT22
@@ -12,6 +13,11 @@ DHT_SENSOR = adafruit_dht.DHT22(DHT_PIN, use_pulseio=False)  # 定義DHT_SENSOR�
 # 連結至SPI
 spi = spidev.SpiDev()
 spi.open(0, 0)
+
+# 設置水泵 & 繼電器
+pump_pin = 18  # 18號GPIO
+GPIO.setmode(GPIO.BCM)  # 編碼模式
+GPIO.setup(pump_pin, GPIO.OUT)  # 將18號設為輸出口
 
 
 # 讀取MCP3008的資料
@@ -29,7 +35,7 @@ while True:
         dht22_humi = math.floor(dht22_humi * 100) / 100  # 格式化資料至小數點後兩位
         dht22_temp = DHT_SENSOR.temperature
         dht22_temp = math.floor(dht22_temp * 100) / 100
-        dht22_index = 1  # 暫時沒辦法處理 先假設1
+        dht22_index = 1  # 暫時沒想法處理 先假設1
 
         # YL-69資料讀取
         mois = analogInput(0)  # Reading from CH0
@@ -46,6 +52,12 @@ while True:
         print('溫度:%.2f°C' % dht22_temp)  # print格式化後的temp
         print('濕度:%.2f%%' % dht22_humi)  # print格式化後的humi
         print('土壤濕度:%.2f%%' % mois)  # print格式化後的mois
+        if mois > 40:  # 濕度>40%不澆水 暫時設40%可改
+            GPIO.output(pump_pin, 0)
+            print('不澆水')
+        else:
+            GPIO.output(pump_pin, 1)
+            print('不澆水')
         res = rq.post(url=dht22_url, data=dht22_data)  # Post至API
         print(res)
         res = rq.post(url=yl69_url, data=yl69_data)  # Post至API
