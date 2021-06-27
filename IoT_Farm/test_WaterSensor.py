@@ -61,7 +61,7 @@ def main():
         elif 30 <= adc_value < 200:
             print("it is water flow")
             print("water level:" + str("%.1f" % (adc_value / 200. * 100)) + "%\n")
-        time.sleep(1)
+        time.sleep(5)
 
 
 if __name__ == '__main__':

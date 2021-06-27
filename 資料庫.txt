@@ -1,7 +1,0 @@
-iotTemperature
-iotHumidity
-iotSoilMoisture
-iotHeatIndex
-iotTime
-
-Testing from ivan
