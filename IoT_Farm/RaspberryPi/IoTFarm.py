@@ -43,10 +43,10 @@ while True:
         mois = int(mois)
 
         # API資料
-        dht22_url = 'http://140.117.71.98:8000/api/humidtemp/'  # API位置
-        yl69_url = 'http://140.117.71.98:8000/api/moisture/'
+        dht22_url = 'http://140.117.71.98:8000/api/Humidtemp/'  # API位置
+        yl69_url = 'http://140.117.71.98:8000/api/Moisture/'
         dht22_data = {'humidity': dht22_humi, 'temperature': dht22_temp, 'heatIndex': dht22_index}  # dht22 data
-        yl69_data = {'value': mois}  # yl69 data
+        yl69_data = {'moisture': mois}  # yl69 data
 
         # 輸出
         print('溫度:%.2f°C' % dht22_temp)  # print格式化後的temp
