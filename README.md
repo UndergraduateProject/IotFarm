@@ -1,5 +1,10 @@
 # IotFarm
 
+### Command:
+-ps 查看背景程式
+-nohup (python3 xx.py) & //將程式丟到背景
+-python3 xx.py //所有程式使用python3 執行
+
 ### 感測器:
 - DHT22  空氣濕度&溫度感測器
 - YL69  土壤濕度感測器
