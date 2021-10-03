@@ -1,62 +1,66 @@
-from flask import Flask, render_template_string, request
+# from flask import Flask, render_template_string, request
 from time import sleep
 import RPi.GPIO as GPIO
 from RpiMotorLib import RpiMotorLib
+import socketio
+import json
 
 GPIO_pins = (14, 15, 18)  # Microstep Resolution MS1-MS3 -> GPIO Pin
 direction = 20  # Direction -> GPIO Pin
 step = 21  # Step -> GPIO Pin
-position = 0  # 現在為手動調整
+position = 0
+# slide = 10
 # position = rq.get
 
+#motor
 mymotortest = RpiMotorLib.A4988Nema(direction, step, GPIO_pins, "A4988")
 
-app = Flask(__name__)
+#socket
+sio = socketio.Client()
 
-TPL = '''
-<html>
-    <head><title>滑軌控制</title></head>
-    <body>
-        <form method="POST" action="test">
-            <p><input type="range" min="1" max="2" name="slider"/></p>
-            <input type="submit" value="submit"/>
-        </form>
-    </body>
-</html>
-'''
+@sio.on('connect')
+def on_connect():
+    print('connection established')
 
+@sio.on("slider")
+def on_message(data):
+    print('message received with ', data)
+    move(data["slide"],data["direction"],data["current"])
+    sio.emit('slider', "tests")
 
-@app.route("/")
-def home():
-    return render_template_string(TPL)
+@sio.on('disconnect')
+def on_disconnect():
+    print('disconnected from server')
 
-
-@app.route("/test", methods=["POST"])
-def test():
-    slider = request.form["slider"]
+def move(slide, direction,current):
     global position
-    if int(slider) == 2:
-        if position == 10:
+    if str(direction) == "down":
+        if position >= 1000:
             print('Cannot move on')
             print(position)
         else:
-            mymotortest.motor_go(True, "Full", 100, 0.01, False, .05)
-            position = position + 1
+            mymotortest.motor_go(True, "Full", slide, 0.01, False, .05)
+            position = current
             print(position)
             # rq.post(url = '', data = 'position')
 
-    if int(slider) == 1:
-        if position == 0:
+    if str(direction) == "up":
+        if position <= 0:
             print('Cannot move on')
             print(position)
         else:
-            mymotortest.motor_go(False, "Full", 100, 0.01, False, .05)
-            position = position - 1
+            mymotortest.motor_go(False, "Full", slide, 0.01, False, .05)
+            position = current
             print(position)
             # rq.post(url = '', data = 'position')
-
-    return render_template_string(TPL)
 
 
 if __name__ == "__main__":
-    app.run()
+    try:
+        sio.connect("http://140.117.71.98:4001")
+
+
+    except:
+        KeyboardInterrupt()
+    
+    
