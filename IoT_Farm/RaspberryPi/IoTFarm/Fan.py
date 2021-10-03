@@ -1,25 +1,47 @@
-import time
+import socketio
 import requests as rq
-from board import *
 import RPi.GPIO as GPIO
+import time
 
-# 設置風扇
-fan_pin = 18  # 視GPIO配置更改
-GPIO.setmode(GPIO.BCM)  # 編碼模式
-GPIO.setup(pump_pin, GPIO.OUT)  # 將18號設為輸出口
+fan_pin = 18
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(fan_pin, GPIO.OUT)
 
-dht22_url = ''
-condition_url = ''
+flag = 0
+GPIO.output(fan_pin, flag)
+
+#socket
+sio = socketio.Client()
+
+@sio.on('connect')
+def on_connect():
+    print('connection established')
+
+@sio.on("fan")
+def on_message(data):
+    print('message received with ', data)
+    sio.emit('fan', "message received")
+    global flag
+    if data == "ON" :
+        flag = 1
+    
+    elif data == "OFF":
+        flag = 0
+
+@sio.on('disconnect')
+def on_disconnect():
+    print('disconnected from server')
 
 while True:
-    try:
-        temp = rq.get(url=dht22_url)
-        condition = rq.get(url=condition_url)
-        if temp > condition:
-            GPIO.output(pump_pin, 1)
-    except RuntimeError as error:  # 資料讀取失敗時
-        print(error.args[0])
-        print('\n')
-        continue
-
-    time.sleep(5.0)  # delay 5 sec
+    res = rq.get("http://140.117.71.98:8000/api/ActionCondition/3/")
+    temp = res.json()["temperature"]
+    mode = res.json()["mode"]
+    # 從DHT22偵測的溫度中獲取
+    if mode == "default":
+        print("currently in auto mode")
+        if temp > 25:
+            flag = 1
+        else:
+            flag = 0
+    # GPIO.output(fan_pin, flag)
+    time.sleep(5)
