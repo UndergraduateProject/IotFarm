@@ -16,6 +16,7 @@ spi.open(0, 0)
 pump_pin = 18  # GPIO18
 GPIO.setmode(GPIO.BCM)  # 編碼模式
 GPIO.setup(pump_pin, GPIO.OUT)  # 將18號設為輸出口
+sleeptime = 1 #rq.get()
 
 #socket
 sio = socketio.Client()
@@ -28,12 +29,15 @@ def on_connect():
 def on_message(data):
     print('message received with ', data)
     if str(data) == "on":
-      # GPIO.output(pump_pin, 1)
+      GPIO.output(pump_pin, 1)
       sio.emit('water', "watering")
+      time.sleep(sleeptime)
+      GPIO.output(pump_pin, 0)
     
     elif str(data == "off"):
       sio.emit('water', "stopped")
-      # GPIO.output(pump_pin, 0)
+      GPIO.output(pump_pin, 0)
+
     
 
 @sio.on('disconnect')
