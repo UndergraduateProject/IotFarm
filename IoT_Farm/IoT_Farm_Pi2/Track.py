@@ -4,13 +4,17 @@ import RPi.GPIO as GPIO
 from RpiMotorLib import RpiMotorLib
 import socketio
 import json
+import requests as rq
 
 GPIO_pins = (14, 15, 18)  # Microstep Resolution MS1-MS3 -> GPIO Pin
 direction = 20  # Direction -> GPIO Pin
 step = 21  # Step -> GPIO Pin
 position = 0
 # slide = 10
-# position = rq.get
+url = 'http://140.117.71.98:8000/api/Track/'
+res = rq.get(url)
+data = res.json()["results"]
+position = data[0]['position']
 
 #motor
 mymotortest = RpiMotorLib.A4988Nema(direction, step, GPIO_pins, "A4988")
@@ -42,7 +46,7 @@ def move(slide, direction,current):
             mymotortest.motor_go(True, "Full", slide, 0.01, False, .05)
             position = current
             print(position)
-            # rq.post(url = '', data = 'position')
+            res = rq.patch(url, position)
 
     if str(direction) == "up":
         if position <= 0:
@@ -52,7 +56,8 @@ def move(slide, direction,current):
             mymotortest.motor_go(False, "Full", slide, 0.01, False, .05)
             position = current
             print(position)
-            # rq.post(url = '', data = 'position')
+            res = rq.patch(url, position)
+
 
 
 if __name__ == "__main__":

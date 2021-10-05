@@ -1,23 +1,47 @@
+import socketio
+import requests as rq
 import RPi.GPIO as GPIO
+import time
 
 fan_pin = 24
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(fan_pin, GPIO.OUT)
-# API URL
 
+flag = 0
+GPIO.output(fan_pin, flag)
 
-def main():
-    try:
-        # temp = rq.get  # 從DHT22偵測的溫度中獲取
-        # condition = rq.get  # 從資料庫取得條件
-        temp = 30  # 要修改成從資料庫取得
-        if temp > 25:  # 要修改成從資料庫取得條件
+#socket
+sio = socketio.Client()
+
+@sio.on('connect')
+def on_connect():
+    print('connection established')
+
+@sio.on("fan")
+def on_message(data):
+    print('message received with ', data)
+    sio.emit('fan', "message received")
+    global flag
+    if data == "ON" :
+        flag = 1
+    
+    elif data == "OFF":
+        flag = 0
+
+@sio.on('disconnect')
+def on_disconnect():
+    print('disconnected from server')
+
+while True:
+    res = rq.get("http://140.117.71.98:8000/api/ActionCondition/3/")
+    temp = res.json()["temperature"]
+    mode = res.json()["mode"]
+    # 從DHT22偵測的溫度中獲取
+    if mode == "default":
+        print("currently in auto mode")
+        if temp > 25:
             flag = 1
-            print('Fan On')
         else:
             flag = 0
-            print('Fan Off')
-        GPIO.output(fan_pin, flag)
-    except RuntimeError as error:
-        print(error.args[0])
-        print('\n')
+    GPIO.output(fan_pin, flag)
+    time.sleep(5)
