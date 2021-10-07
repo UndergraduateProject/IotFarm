@@ -47,5 +47,3 @@ def on_disconnect():
 
 while True:
     sio.connect("http://140.117.71.98:4001")
-    time.sleep(10)
-    sio.disconnect()
