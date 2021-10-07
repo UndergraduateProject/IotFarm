@@ -6,6 +6,7 @@ SPIMOSI = 20
 SPICS = 16
 photo_ch = 0
 # API URL
+water_url = "http://140.117.71.98:8000/api/WaterStorage/"
 
 
 def init():
@@ -51,7 +52,8 @@ def main():
     init()
     try:
         adc_value = readadc(photo_ch, SPICLK, SPIMOSI, SPIMISO, SPICS)
-        #  rq.post 回傳adc_value(水量)至API
+        # data = {"volume" : adc_value}
+        #  rq.post(water_url, data) 回傳adc_value(水量)至API
         if adc_value == 0:
             print("no water\n")
         elif 0 < adc_value < 30:

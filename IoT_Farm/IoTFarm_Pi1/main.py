@@ -7,15 +7,20 @@ from Fan import main as main_fan
 
 # init
 watering_flag = False
+start = time.time()
 
 while True:
+    current = time.time()
     try:
         main_dht22()
     except RuntimeError as error:
         print("dht22" , error.args[0])
         print('\n')
     try:
-        watering_flag = main_yl69(watering_flag)
+        if last:
+            if (current - last) >= 1800:
+                watering_flag = True
+        watering_flag, last = main_yl69(watering_flag)
     except RuntimeError as error:
         print("water", error.args[0])
         print('\n')

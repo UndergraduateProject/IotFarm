@@ -4,6 +4,7 @@ import spidev
 from numpy import interp
 import time
 import RPi.GPIO as GPIO
+import socketio
 
 spi = spidev.SpiDev()
 spi.open(0, 0)
@@ -12,7 +13,34 @@ pump_pin = 23
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(pump_pin, GPIO.OUT)
 yl69_url = 'http://140.117.71.98:8000/api/Moisture/'  # API URL
-# condition_url = ''  # condition's API route
+condition_url = 'http://140.117.71.98:8000/api/ActionCondition/1/'  # condition's API route
+
+#socket
+sio = socketio.Client()
+sio.connect()
+
+@sio.on('connect')
+def on_connect():
+    print('connection established')
+
+@sio.on("water")
+def on_message(data):
+    print('message received with ', data)
+    if str(data) == "on":
+      GPIO.output(pump_pin, 1)
+      sio.emit('water', "watering")
+      time.sleep(sleeptime)
+      GPIO.output(pump_pin, 0)
+    
+    elif str(data == "off"):
+      sio.emit('water', "stopped")
+      GPIO.output(pump_pin, 0)
+
+    
+
+@sio.on('disconnect')
+def on_disconnect():
+    print('disconnected from server')
 
 
 def analogInput(channel):
@@ -30,8 +58,9 @@ def main(flag):
         mois = int(mois)
         yl69_data = {'moisture': mois}
         print('土壤濕度:%.2f%%' % mois)
-        # condition = rq.get  # 從API獲取condition
-        if mois > 40 or flag:  # 要改condition
+        res = rq.get(condition_url)  # 從API獲取condition
+        conditon = res.json()['moisture']
+        if mois > conditon or flag:  # 要改condition
             GPIO.output(pump_pin, 0)
             print('不澆水')
         else:
@@ -39,11 +68,12 @@ def main(flag):
             print('澆水')
             time.sleep(3)
             res = rq.post(url=yl69_url, data=yl69_data)
-            return True 
+            timestamp = time.time()
+            return (True, timestamp) 
         res = rq.post(url=yl69_url, data=yl69_data)
         print(res)
         print('\n')
-        return True 
+        return (True, None) 
     
     except RuntimeError as error:
         print(error.args[0])

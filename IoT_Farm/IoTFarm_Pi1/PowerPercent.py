@@ -1,5 +1,6 @@
 import smbus
 
+battery_url = "http://140.117.71.98:8000/api/Electricity/"
 # API URL
 _REG_CONFIG                 = 0x00
 _REG_SHUNTVOLTAGE           = 0x01
@@ -99,7 +100,8 @@ def main():
             p = 100
         if p < 0:
             p = 0
-        # rq.post 回傳P值(電量)至API
+        data = {"quantitiy":p}
+        res = rq.post(battery_url, data)
         print("Power Percent:{:3.1f}%".format(p))
         print("\n")
     except RuntimeError as error:

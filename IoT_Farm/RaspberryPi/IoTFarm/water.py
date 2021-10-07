@@ -1,7 +1,6 @@
 import time
 import math
 import requests as rq
-# import adafruit_dht
 from board import *
 import spidev
 from numpy import interp
@@ -13,9 +12,9 @@ spi = spidev.SpiDev()
 spi.open(0, 0)
 
 # 設置水泵 & 繼電器
-pump_pin = 18  # GPIO18
+pump_pin = 23  # GPIO23
 GPIO.setmode(GPIO.BCM)  # 編碼模式
-GPIO.setup(pump_pin, GPIO.OUT)  # 將18號設為輸出口
+GPIO.setup(pump_pin, GPIO.OUT)  # 設為輸出口
 sleeptime = 1 #rq.get()
 
 #socket
@@ -45,5 +44,6 @@ def on_disconnect():
     print('disconnected from server')
 
 
+sio.connect("http://140.117.71.98:4001")
+
 while True:
-    sio.connect("http://140.117.71.98:4001")
