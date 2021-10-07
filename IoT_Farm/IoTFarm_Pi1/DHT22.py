@@ -4,7 +4,7 @@ import adafruit_dht
 from board import *
 import RPi.GPIO as GPIO
 
-DHT_PIN = 4  # D4  # 自用不用改
+DHT_PIN = D4  # D4  # 自用不用改
 DHT_SENSOR = adafruit_dht.DHT22(DHT_PIN, use_pulseio=False)
 dht22_url = 'http://140.117.71.98:8000/api/Humidtemp/'  # API URL
 

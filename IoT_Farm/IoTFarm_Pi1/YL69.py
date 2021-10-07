@@ -2,6 +2,7 @@ import requests as rq
 from board import *
 import spidev
 from numpy import interp
+import time
 import RPi.GPIO as GPIO
 
 spi = spidev.SpiDev()
@@ -21,27 +22,33 @@ def analogInput(channel):
     return MCP3008_data
 
 
-def main():
+def main(flag):
     try:
+        GPIO.setup(pump_pin, GPIO.OUT)
         mois = analogInput(0)
         mois = interp(mois, [0, 1023], [100, 0])
         mois = int(mois)
         yl69_data = {'moisture': mois}
         print('土壤濕度:%.2f%%' % mois)
         # condition = rq.get  # 從API獲取condition
-        if mois > 40:  # 要改condition
+        if mois > 40 or flag:  # 要改condition
             GPIO.output(pump_pin, 0)
             print('不澆水')
         else:
             GPIO.output(pump_pin, 1)
             print('澆水')
+            time.sleep(3)
+            res = rq.post(url=yl69_url, data=yl69_data)
+            return True 
         res = rq.post(url=yl69_url, data=yl69_data)
         print(res)
         print('\n')
+        return True 
+    
     except RuntimeError as error:
         print(error.args[0])
         print('\n')
-
+    
 
 if __name__ == '__main__':
     main()

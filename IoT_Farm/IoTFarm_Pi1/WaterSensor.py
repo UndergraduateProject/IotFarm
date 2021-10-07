@@ -10,7 +10,7 @@ photo_ch = 0
 
 def init():
     GPIO.setwarnings(False)
-    GPIO.cleanup()
+    #GPIO.cleanup()
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(SPIMOSI, GPIO.OUT)
     GPIO.setup(SPIMISO, GPIO.IN)
@@ -67,4 +67,3 @@ def main():
 if __name__ == '__main__':
     main()
 
-GPIO.cleanup()
