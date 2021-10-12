@@ -11,7 +11,7 @@ import requests as rq
 watering_flag = False
 start = time.time()
 res = rq.get("http://140.117.71.98:8000/api/Sensor/sensor1/")
-interval = res.json()["interval"]
+interval = int(res.json()["interval"])
 last = time.time()-5000
 
 while True:
