@@ -1,4 +1,5 @@
 import time
+from datetime import datetime, timedelta
 from DHT22 import main as main_dht22
 from YL69 import main as main_yl69
 from WaterSensor import main as main_ws
@@ -11,32 +12,43 @@ import requests as rq
 watering_flag = False
 start = time.time()
 res = rq.get("http://140.117.71.98:8000/api/Sensor/sensor1/")
-interval = int(res.json()["interval"])
-last = time.time()-5000
+interval = res.json()["interval"]
+interval_hour, interval_minute, interval_second = map(float, interval.split(':'))
+if interval_hour:
+    interval = interval_hour
+elif interval_minute:
+    interval = interval_minute
+last = datetime.now() + timedelta(interval)
 
 while True:
-    current = time.time()
+    current = datetime.now()
+    result = current-last
+    result_hour, result_minute, result_second = map(float, result.split(':'))
+    if interval_hour:
+        compare = result_hour
+    elif interval_minute :
+        compare = result_minute
     try:
-        if current-last >= interval:
+        if compare >= interval:
             main_dht22()
     except RuntimeError as error:
         print("dht22" , error.args[0])
         print('\n')
     try:
-        if (current-last) >= interval:
+        if compare >= interval:
             main_yl69()
     except RuntimeError as error:
         print("water", error.args[0])
         print('\n')
 
     try:
-        if (current-last)>= interval:
+        if compare>= interval:
             main_ws()
     except RuntimeError as error:
         print("watersensor" , error.args[0])
         print('\n')
     try:
-        if (current-last)>= interval:
+        if compare>= interval:
             main_pp()
     except RuntimeError as error:
         print("battery", error.args[0])
@@ -47,5 +59,5 @@ while True:
         print("fan", error.args[0])
         print('\n')
     print("started")
-    if (current-last) >= interval:
-        last = time.time()
+    if compare >= interval:
+        last = datetime.now()
