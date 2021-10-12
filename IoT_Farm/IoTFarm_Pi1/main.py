@@ -16,18 +16,30 @@ interval = res.json()["interval"]
 interval_hour, interval_minute, interval_second = map(float, interval.split(':'))
 if interval_hour:
     interval = interval_hour
+    last = datetime.now() + timedelta(hours=-interval)
+
 elif interval_minute:
     interval = interval_minute
-last = datetime.now() + timedelta(interval)
+    last = datetime.now() + timedelta(minutes=-interval)
+
+elif interval_second:
+    interval = interval_second
+    last = datetime.now() + timedelta(seconds=-interval)
 
 while True:
     current = datetime.now()
-    result = current-last
+    result = str(current-last)
     result_hour, result_minute, result_second = map(float, result.split(':'))
+    
     if interval_hour:
         compare = result_hour
+
     elif interval_minute :
         compare = result_minute
+
+    elif interval_second:
+        compare = result_second
+
     try:
         if compare >= interval:
             main_dht22()
