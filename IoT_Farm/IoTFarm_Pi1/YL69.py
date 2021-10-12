@@ -15,7 +15,7 @@ yl69_url = 'http://140.117.71.98:8000/api/Moisture/'  # API URL
 condition_url = 'http://140.117.71.98:8000/api/ActionCondition/1/'  # condition's API route
 
 
-def main(flag):
+def main():
     try:
         GPIO.setup(pump_pin, GPIO.OUT)
         mois = analogInput(0)
