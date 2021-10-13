@@ -8,9 +8,10 @@ from Fan import main as main_fan
 import water
 import requests as rq
 import LED 
+import RPi.GPIO as GPIO
 
 # init
-watering_flag = False
+fan_pin = 24
 start = time.time()
 res = rq.get("http://140.117.71.98:8000/api/Sensor/sensor1/")
 interval = res.json()["interval"]
@@ -78,4 +79,4 @@ while True:
             last = datetime.now()
 
     except KeyboardInterrupt:
-        GPIO.cleanup()
+        GPIO.output(fan_pin, 0)
