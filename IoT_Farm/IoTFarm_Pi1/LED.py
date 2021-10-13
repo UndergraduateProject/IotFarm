@@ -17,9 +17,9 @@ LED_BRIGHTNESS = 100
 LED_FREQ_HZ = 800000
 LED_DMA = 10
 LED_INVERT = False
-RED = data['red']
-GREEN = data['green']
-BLUE = data['blue']
+RED = int(data['red'])
+GREEN = int(data['green'])
+BLUE = int(data['blue'])
 
 strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)  # 定義
 
@@ -39,9 +39,9 @@ def on_connect():
 def on_message(data):
     print('message received with ', data)
     LED_BRIGHTNESS = data['brightness']
-    RED = data['red']
-    GREEN = data['green']
-    BLUE = data['blue']
+    RED = int(data['red'])
+    GREEN = int(data['green'])
+    BLUE = int(data['blue'])
     for i in range(0, strip.numPixels()):
         strip.setPixelColor(i, Color(RED, GREEN, BLUE))  # 更改燈的顏色
 
