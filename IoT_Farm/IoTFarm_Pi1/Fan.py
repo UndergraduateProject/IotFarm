@@ -6,9 +6,9 @@ import time
 fan_pin = 24
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(fan_pin, GPIO.OUT)
-
-flag = 0
-GPIO.output(fan_pin, flag)
+    
+#flag = 0
+#GPIO.output(fan_pin, flag)
 
 #socket
 sio = socketio.Client()
@@ -24,24 +24,33 @@ def on_message(data):
     global flag
     if data == "ON" :
         flag = 1
-    
-    elif data == "OFF":
+    elif data == "OFF" or data == "cleanup":
         flag = 0
 
 @sio.on('disconnect')
 def on_disconnect():
     print('disconnected from server')
 
-while True:
+def main():
+    #GPIO.setup(fan_pin, GPIO.OUT)
     res = rq.get("http://140.117.71.98:8000/api/ActionCondition/3/")
     temp = res.json()["temperature"]
     mode = res.json()["mode"]
     # 從DHT22偵測的溫度中獲取
     if mode == "default":
-        print("currently in auto mode")
+        #print("currently in auto mode")
         if temp > 25:
             flag = 1
         else:
             flag = 0
-    GPIO.output(fan_pin, flag)
-    time.sleep(5)
+        GPIO.output(fan_pin, flag)
+        
+
+
+if __name__ == '__main__':
+    try:
+        main()
+
+    except KeyboardInterrupt:
+        GPIO.output(fan_pin, 0)
+

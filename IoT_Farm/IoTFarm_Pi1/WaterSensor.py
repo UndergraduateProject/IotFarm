@@ -6,11 +6,12 @@ SPIMOSI = 20
 SPICS = 16
 photo_ch = 0
 # API URL
+water_url = "http://140.117.71.98:8000/api/WaterStorage/"
 
 
 def init():
     GPIO.setwarnings(False)
-    GPIO.cleanup()
+    #GPIO.cleanup()
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(SPIMOSI, GPIO.OUT)
     GPIO.setup(SPIMISO, GPIO.IN)
@@ -51,7 +52,9 @@ def main():
     init()
     try:
         adc_value = readadc(photo_ch, SPICLK, SPIMOSI, SPIMISO, SPICS)
-        #  rq.post 回傳adc_value(水量)至API
+        # data = {"volume" : adc_value, sensor:"WaterSensor"}
+        # headers = {"Authorization" : "Token 5dbb9140a4a995ece1223cbc22343854b7e380f4"}
+        #  rq.post(water_url, data) 回傳adc_value(水量)至API
         if adc_value == 0:
             print("no water\n")
         elif 0 < adc_value < 30:
@@ -67,4 +70,3 @@ def main():
 if __name__ == '__main__':
     main()
 
-GPIO.cleanup()

@@ -8,13 +8,13 @@ import socketio
 import RPi.GPIO as GPIO
 
 # 連結至SPI
-spi = spidev.SpiDev()
-spi.open(0, 0)
+#spi = spidev.SpiDev()
+#spi.open(0, 0)
 
 # 設置水泵 & 繼電器
-pump_pin = 23  # GPIO23
-GPIO.setmode(GPIO.BCM)  # 編碼模式
-GPIO.setup(pump_pin, GPIO.OUT)  # 設為輸出口
+#pump_pin = 23  # GPIO23
+#GPIO.setmode(GPIO.BCM)  # 編碼模式
+#GPIO.setup(pump_pin, GPIO.OUT)  # 設為輸出口
 sleeptime = 1 #rq.get()
 
 #socket
@@ -46,5 +46,3 @@ def on_disconnect():
 
 sio.connect("http://140.117.71.98:4001")
 
-while True:
-  None
