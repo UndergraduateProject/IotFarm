@@ -53,4 +53,5 @@ def on_message(data):
 def on_disconnect():
     print('disconnected from server')
 
-sio.connect("140.117.71.98:4001")
+sio.connect("http://140.117.71.98:4001")
+
