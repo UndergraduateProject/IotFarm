@@ -45,6 +45,7 @@ def move(slide, direction):
         else:
             mymotortest.motor_go(True, "Full", slide, 0.01, False, .05)
             print(position)
+            position = position + slide
             res = rq.patch(url, position)
             sio.emit('slider', "Moving")
 
@@ -56,6 +57,7 @@ def move(slide, direction):
         else:
             mymotortest.motor_go(False, "Full", slide, 0.01, False, .05)
             print(position)
+            position = position - slide
             res = rq.patch(url, position)
             sio.emit('slider', "Moving")
 
