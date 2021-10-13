@@ -1,17 +1,56 @@
 from rpi_ws281x import Adafruit_NeoPixel, Color
+import requests as rq
+import socketio
 
-LED_COUNT = 30
+sio = socketio.Client()
+url = "http://140.117.71.98:8000/api/LED/"
+res = rq.get(url)
+data = res.json()
+count = data['count']
+offset = url + str(count)
+res = rq.get(offset)
+data = res.json()
+
+LED_COUNT = 24
 LED_PIN = 18
-LED_BRIGHTNESS = 255
+LED_BRIGHTNESS = 100
 LED_FREQ_HZ = 800000
 LED_DMA = 10
 LED_INVERT = False
+RED = data['red']
+GREEN = data['green']
+BLUE = data['blue']
 
 strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)  # 定義
 
 strip.begin()
 
 for i in range(0, strip.numPixels()):
-    strip.setPixelColor(i, Color(0, 0, 255))  # 更改燈的顏色
+    strip.setPixelColor(i, Color(RED, GREEN, BLUE))  # 更改燈的顏色
 
 strip.show()
+
+
+@sio.on('connect')
+def on_connect():
+    print('connection established')
+
+@sio.on("light")
+def on_message(data):
+    print('message received with ', data)
+    LED_BRIGHTNESS = data['brightness']
+    RED = data['red']
+    GREEN = data['green']
+    BLUE = data['blue']
+    for i in range(0, strip.numPixels()):
+        strip.setPixelColor(i, Color(RED, GREEN, BLUE))  # 更改燈的顏色
+
+    strip.show()
+
+    
+
+@sio.on('disconnect')
+def on_disconnect():
+    print('disconnected from server')
+
+sio.connect("140.117.71.98:4001")
