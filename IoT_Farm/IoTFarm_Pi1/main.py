@@ -7,7 +7,10 @@ from PowerPercent import main as main_pp
 from Fan import main as main_fan
 import water
 import requests as rq
-import LED 
+import LED
+import socketio
+
+sio = socketio.Client()
 
 # init
 start = time.time()

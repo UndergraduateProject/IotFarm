@@ -24,8 +24,7 @@ def on_message(data):
     global flag
     if data == "ON" :
         flag = 1
-    
-    elif data == "OFF":
+    elif data == "OFF" or data == "cleanup":
         flag = 0
 
 @sio.on('disconnect')
