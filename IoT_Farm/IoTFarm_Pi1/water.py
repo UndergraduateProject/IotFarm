@@ -8,8 +8,8 @@ import socketio
 import RPi.GPIO as GPIO
 
 # 連結至SPI
-spi = spidev.SpiDev()
-spi.open(0, 0)
+#spi = spidev.SpiDev()
+#spi.open(0, 0)
 
 # 設置水泵 & 繼電器
 pump_pin = 23  # GPIO23
