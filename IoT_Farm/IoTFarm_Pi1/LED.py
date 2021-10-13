@@ -42,7 +42,6 @@ def on_message(data):
         RED = 0
         GREEN = 0
         BLUE = 0
-    }
     else :
         RED = int(data['red'])
         GREEN = int(data['green'])
