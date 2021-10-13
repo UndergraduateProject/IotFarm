@@ -15,6 +15,12 @@ yl69_url = 'http://140.117.71.98:8000/api/Moisture/'  # API URL
 condition_url = 'http://140.117.71.98:8000/api/ActionCondition/1/'  # condition's API route
 
 
+def analogInput(channel):
+    spi.max_speed_hz = 1350000
+    adc = spi.xfer2([1, (8 + channel) << 4, 0])
+    MCP3008_data = ((adc[1] & 3) << 8) + adc[2]
+    return MCP3008_data
+
 def main():
     try:
         GPIO.setup(pump_pin, GPIO.OUT)
