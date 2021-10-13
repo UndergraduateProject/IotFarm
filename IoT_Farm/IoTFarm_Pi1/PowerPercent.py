@@ -1,4 +1,5 @@
 import smbus
+import requests as rq
 
 battery_url = "http://140.117.71.98:8000/api/Electricity/"
 # API URL
@@ -100,8 +101,9 @@ def main():
             p = 100
         if p < 0:
             p = 0
-        data = {"quantitiy":p}
-        res = rq.post(battery_url, data)
+        data = {"quantitiy":p, "sensor":"sensor1"}
+        headers = {"Authorization" : "Token 5dbb9140a4a995ece1223cbc22343854b7e380f4"}
+        res = rq.post(battery_url, data = data, headers = headers)
         print("Power Percent:{:3.1f}%".format(p))
         print("\n")
     except RuntimeError as error:

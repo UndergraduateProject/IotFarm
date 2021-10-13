@@ -28,7 +28,7 @@ def main():
         mois = interp(mois, [0, 1023], [100, 0])
         mois = int(mois)
         yl69_data = {'moisture': mois}
-        print('土壤濕度:%.2f%%' % mois)
+        print('土壤濕度:%.2f%%' % mois, "sensor":"YL-69")
         res = rq.get(condition_url)  # 從API獲取condition
         conditon = res.json()['moisture']
         if mois > conditon :  # 要改condition
@@ -38,9 +38,9 @@ def main():
             GPIO.output(pump_pin, 1)
             print('澆水')
             time.sleep(3)
-            res = rq.post(url=yl69_url, data=yl69_data)
             timestamp = time.time()
-        res = rq.post(url=yl69_url, data=yl69_data)
+        headers = {"Authorization" : "Token 5dbb9140a4a995ece1223cbc22343854b7e380f4"}
+        res = rq.post(url=yl69_url, data=yl69_data, headers=headers)
         print(res)
         print('\n')
     

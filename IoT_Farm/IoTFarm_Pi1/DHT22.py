@@ -20,10 +20,11 @@ def main():
             dht22_temp = DHT_SENSOR.temperature
         dht22_temp = math.floor(dht22_temp * 100) / 100
         dht22_index = 1  # 幫我刪了 應該用不到
-        dht22_data = {'humidity': dht22_humi, 'temperature': dht22_temp, 'heatIndex': dht22_index}  # 同上 index應該用不到
+        dht22_data = {'humidity': dht22_humi, 'temperature': dht22_temp, 'heatIndex': dht22_index. 'sensor': "DHT-22"}  # 同上 index應該用不到
+        headers= {'Authorization': 'Token 5dbb9140a4a995ece1223cbc22343854b7e380f4'}
         print('溫度:%.2f°C' % dht22_temp)
         print('濕度:%.2f%%' % dht22_humi)
-        res = rq.post(url=dht22_url, data=dht22_data)
+        res = rq.post(dht22_url, data=dht22_data, headers=headers)
         print(res)
         print('\n')
     except RuntimeError as error:
