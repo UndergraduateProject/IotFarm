@@ -55,6 +55,3 @@ def on_disconnect():
 
 sio.connect("http://140.117.71.98:4001")
 
-KeyboardInterrupt:
-    strip.setPixelColor(i, Color(0, 0, 0))  # 更改燈的顏色
-    
