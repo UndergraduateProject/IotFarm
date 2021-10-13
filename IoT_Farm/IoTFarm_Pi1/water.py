@@ -12,9 +12,9 @@ import RPi.GPIO as GPIO
 #spi.open(0, 0)
 
 # 設置水泵 & 繼電器
-pump_pin = 23  # GPIO23
-GPIO.setmode(GPIO.BCM)  # 編碼模式
-GPIO.setup(pump_pin, GPIO.OUT)  # 設為輸出口
+#pump_pin = 23  # GPIO23
+#GPIO.setmode(GPIO.BCM)  # 編碼模式
+#GPIO.setup(pump_pin, GPIO.OUT)  # 設為輸出口
 sleeptime = 1 #rq.get()
 
 #socket
