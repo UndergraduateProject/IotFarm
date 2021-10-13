@@ -27,8 +27,8 @@ def main():
         mois = analogInput(0)
         mois = interp(mois, [0, 1023], [100, 0])
         mois = int(mois)
-        yl69_data = {'moisture': mois}
-        print('土壤濕度:%.2f%%' % mois, "sensor":"YL-69")
+        yl69_data = {'moisture': mois, 'sensor':"YL-69"}
+        print('土壤濕度:%.2f%%' % mois)
         res = rq.get(condition_url)  # 從API獲取condition
         conditon = res.json()['moisture']
         if mois > conditon :  # 要改condition
