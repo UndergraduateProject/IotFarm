@@ -7,6 +7,7 @@ from PowerPercent import main as main_pp
 from Fan import main as main_fan
 import water
 import requests as rq
+import LED 
 
 # init
 watering_flag = False
@@ -43,12 +44,14 @@ while True:
     try:
         if compare >= interval:
             main_dht22()
+            print("get dht22")
     except RuntimeError as error:
         print("dht22" , error.args[0])
         print('\n')
     try:
         if compare >= interval:
             main_yl69()
+            print('try watering')
     except RuntimeError as error:
         print("water", error.args[0])
         print('\n')
@@ -70,6 +73,5 @@ while True:
     except RuntimeError as error:
         print("fan", error.args[0])
         print('\n')
-    print("started")
     if compare >= interval:
         last = datetime.now()

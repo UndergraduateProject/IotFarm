@@ -46,7 +46,6 @@ def main():
             else:
                 flag = 0
         GPIO.output(fan_pin, flag)
-        print("opening")
         
     except KeyboardInterrupt:
         GPIO.output(fan_pin, 0)
