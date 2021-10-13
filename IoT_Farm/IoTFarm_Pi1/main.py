@@ -12,6 +12,8 @@ import RPi.GPIO as GPIO
 
 # init
 fan_pin = 24
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(fan_pin, GPIO.OUT)
 start = time.time()
 res = rq.get("http://140.117.71.98:8000/api/Sensor/sensor1/")
 interval = res.json()["interval"]
