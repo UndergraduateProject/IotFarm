@@ -38,16 +38,15 @@ def on_connect():
 @sio.on("light")
 def on_message(data):
     print('message received with ', data)
-    if(data == "cleanup"){
+    if data == "cleanup" :
         RED = 0
         GREEN = 0
         BLUE = 0
     }
-    else{
+    else :
         RED = int(data['red'])
         GREEN = int(data['green'])
         BLUE = int(data['blue'])
-    }
     for i in range(0, strip.numPixels()):
         strip.setPixelColor(i, Color(RED, GREEN, BLUE))  # 更改燈的顏色
     strip.show()
