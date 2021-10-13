@@ -33,8 +33,7 @@ def on_disconnect():
     print('disconnected from server')
 
 def main():
-    try:
-        #GPIO.setup(fan_pin, GPIO.OUT)
+    #GPIO.setup(fan_pin, GPIO.OUT)
         res = rq.get("http://140.117.71.98:8000/api/ActionCondition/3/")
         temp = res.json()["temperature"]
         mode = res.json()["mode"]
@@ -47,8 +46,12 @@ def main():
                 flag = 0
         GPIO.output(fan_pin, flag)
         
+
+
+if __name__ == '__main__':
+    try:
+        main()
+
     except KeyboardInterrupt:
         GPIO.output(fan_pin, 0)
 
-if __name__ == '__main__':
-    main()
