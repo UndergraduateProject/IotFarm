@@ -32,8 +32,8 @@ def on_connect():
 @sio.on("angle")
 def on_message(data):
     print('message received with ', data)
-    switch2deg(data)
-    sio.emit('angle', "camere angle moved")
+    switch2deg(data["angle"])
+    sio.emit('angle', "camera angle moved")
 
 @sio.on('disconnect')
 def on_disconnect():

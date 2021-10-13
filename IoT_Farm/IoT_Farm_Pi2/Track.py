@@ -29,35 +29,35 @@ def on_connect():
 @sio.on("slider")
 def on_message(data):
     print('message received with ', data)
-    move(data["slide"],data["direction"],data["current"])
-    sio.emit('slider', "tests")
+    move(data["slide"],data["direction"])
 
 @sio.on('disconnect')
 def on_disconnect():
     print('disconnected from server')
 
-def move(slide, direction,current):
+def move(slide, direction):
     global position
     if str(direction) == "down":
         if position >= 1000:
             print('Cannot move on')
             print(position)
+            sio.emit('slider', "Cannot move on")
         else:
             mymotortest.motor_go(True, "Full", slide, 0.01, False, .05)
-            position = current
             print(position)
             res = rq.patch(url, position)
+            sio.emit('slider', "Moving")
 
     if str(direction) == "up":
         if position <= 0:
             print('Cannot move on')
             print(position)
+            sio.emit('slider', "Cannot move on")
         else:
             mymotortest.motor_go(False, "Full", slide, 0.01, False, .05)
-            position = current
             print(position)
             res = rq.patch(url, position)
-
+            sio.emit('slider', "Moving")
 
 
 if __name__ == "__main__":
