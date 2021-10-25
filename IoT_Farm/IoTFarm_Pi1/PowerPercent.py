@@ -102,7 +102,7 @@ def main():
         if p < 0:
             p = 0
         data = {"quantitiy":p, "sensor":"sensor1"}
-        headers = {"Authorization" : "Token 5dbb9140a4a995ece1223cbc22343854b7e380f4"}
+        headers = {"Authorization" : "Token e4f12115e54ab5a41465d282e8df778c9c4c094b"}
         res = rq.post(battery_url, data = data, headers = headers)
         print("Power Percent:{:3.1f}%".format(p))
         print("\n")

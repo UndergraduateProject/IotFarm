@@ -12,9 +12,9 @@ import RPi.GPIO as GPIO
 #spi.open(0, 0)
 
 # 設置水泵 & 繼電器
-#pump_pin = 23  # GPIO23
-#GPIO.setmode(GPIO.BCM)  # 編碼模式
-#GPIO.setup(pump_pin, GPIO.OUT)  # 設為輸出口
+pump_pin = 23  # GPIO23
+GPIO.setmode(GPIO.BCM)  # 編碼模式
+GPIO.setup(pump_pin, GPIO.OUT)  # 設為輸出口
 sleeptime = 1 #rq.get()
 
 #socket
@@ -30,7 +30,7 @@ def on_message(data):
     if str(data) == "on":
       GPIO.output(pump_pin, 1)
       sio.emit('water', "watering")
-      time.sleep(sleeptime)
+      time.sleep(5)
       GPIO.output(pump_pin, 0)
     
     elif str(data == "off"):
@@ -45,4 +45,3 @@ def on_disconnect():
 
 
 sio.connect("http://140.117.71.98:4001")
-

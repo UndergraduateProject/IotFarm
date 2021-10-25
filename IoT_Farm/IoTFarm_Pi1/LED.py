@@ -38,6 +38,7 @@ def on_connect():
 @sio.on("light")
 def on_message(data):
     print('message received with ', data)
+    print(data)
     if data == "cleanup" :
         RED = 0
         GREEN = 0

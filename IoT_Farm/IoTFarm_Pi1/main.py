@@ -5,7 +5,7 @@ from YL69 import main as main_yl69
 from WaterSensor import main as main_ws
 from PowerPercent import main as main_pp
 from Fan import main as main_fan
-import water
+#import water
 import requests as rq
 import LED
 import socketio
@@ -80,5 +80,4 @@ while True:
             last = datetime.now()
 
     except KeyboardInterrupt:
-        sio.emit('light', "cleanup")
-        sio.emit('fan', "cleanup")
+        print("closing")
