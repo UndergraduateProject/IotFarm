@@ -12,6 +12,7 @@ GPIO.setup(fan_pin, GPIO.OUT)
 
 #socket
 sio = socketio.Client()
+sio.connect("http://140.117.71.98:4001")
 
 @sio.on('connect')
 def on_connect():
@@ -26,13 +27,14 @@ def on_message(data):
         flag = 1
     elif data == "OFF" or data == "cleanup":
         flag = 0
+    GPIO.output(fan_pin, flag)
 
 @sio.on('disconnect')
 def on_disconnect():
     print('disconnected from server')
 
 def main():
-    #GPIO.setup(fan_pin, GPIO.OUT)
+    GPIO.setup(fan_pin, GPIO.OUT)
     res = rq.get("http://140.117.71.98:8000/api/ActionCondition/3/")
     temp = res.json()["temperature"]
     mode = res.json()["mode"]
@@ -40,11 +42,9 @@ def main():
     if mode == "default":
         #print("currently in auto mode")
         if temp > 25:
-            flag = 1
+            GPIO.output(fan_pin, 1)
         else:
-            flag = 0
-        GPIO.output(fan_pin, flag)
-        
+            GPIO.output(fan_pin, 0)
 
 
 if __name__ == '__main__':
