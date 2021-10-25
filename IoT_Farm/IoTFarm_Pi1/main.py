@@ -8,9 +8,9 @@ from Fan import main as main_fan
 #import water
 import requests as rq
 import LED
-import socketio
+#import socketio
 
-sio = socketio.Client()
+#sio = socketio.Client()
 
 # init
 start = time.time()

@@ -37,8 +37,11 @@ def main():
         else:
             print('澆水')
             GPIO.output(pump_pin, 1)
+            print("after 1 output")
             time.sleep(5)
+            print("before 0 output")
             GPIO.output(pump_pin, 0)
+            print("stop")
             timestamp = time.time()
         headers = {"Authorization" : "Token e4f12115e54ab5a41465d282e8df778c9c4c094b"}
         res = rq.post(url=yl69_url, data=yl69_data, headers=headers)
