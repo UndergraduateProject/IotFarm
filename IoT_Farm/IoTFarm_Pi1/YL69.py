@@ -8,7 +8,7 @@ import RPi.GPIO as GPIO
 spi = spidev.SpiDev()
 spi.open(0, 0)
 
-pump_pin = 23
+pump_pin = 12
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(pump_pin, GPIO.OUT)
 yl69_url = 'http://140.117.71.98:8000/api/Moisture/'  # API URL
@@ -46,6 +46,8 @@ def main():
         headers = {"Authorization" : "Token e4f12115e54ab5a41465d282e8df778c9c4c094b"}
         res = rq.post(url=yl69_url, data=yl69_data, headers=headers)
         print(res)
+        #GPIO.cleanup()
+        time.sleep(10)
         print('\n')
     
     except RuntimeError as error:

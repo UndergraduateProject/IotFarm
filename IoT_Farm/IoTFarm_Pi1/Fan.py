@@ -20,14 +20,14 @@ def on_connect():
 
 @sio.on("fan")
 def on_message(data):
+    GPIO.setup(fan_pin, GPIO.OUT)
     print('message received with ', data)
     sio.emit('fan', "message received")
     global flag
     if data == "ON" :
-        flag = 1
+        GPIO.output(fan_pin, 1)
     elif data == "OFF" or data == "cleanup":
-        flag = 0
-    GPIO.output(fan_pin, flag)
+        GPIO.output(fan_pin, 0)
 
 @sio.on('disconnect')
 def on_disconnect():
@@ -35,14 +35,16 @@ def on_disconnect():
 
 def main():
     GPIO.setup(fan_pin, GPIO.OUT)
+    print("FAN SETUP")
     res = rq.get("http://140.117.71.98:8000/api/ActionCondition/3/")
     temp = res.json()["temperature"]
     mode = res.json()["mode"]
     # 從DHT22偵測的溫度中獲取
-    if mode == "default":
+    if mode == "auto":
         #print("currently in auto mode")
         if temp > 25:
             GPIO.output(fan_pin, 1)
+            print("OPEN FAN")
         else:
             GPIO.output(fan_pin, 0)
 

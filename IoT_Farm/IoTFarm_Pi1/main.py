@@ -5,9 +5,9 @@ from YL69 import main as main_yl69
 from WaterSensor import main as main_ws
 from PowerPercent import main as main_pp
 from Fan import main as main_fan
-#import water
+import water
 import requests as rq
-import LED
+#import LED
 #import socketio
 
 #sio = socketio.Client()
@@ -72,7 +72,8 @@ while True:
             print("battery", error.args[0])
             print('\n')
         try:
-            main_fan()
+            if compare >= interval:
+                main_fan()
         except RuntimeError as error:
             print("fan", error.args[0])
             print('\n')
@@ -81,3 +82,4 @@ while True:
 
     except KeyboardInterrupt:
         print("closing")
+        GPIO.cleanup()
