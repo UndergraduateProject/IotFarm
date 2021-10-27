@@ -1,5 +1,6 @@
 import smbus
 import requests as rq
+import json
 
 battery_url = "http://140.117.71.98:8000/api/Electricity/"
 # API URL
@@ -102,7 +103,11 @@ def main():
         if p < 0:
             p = 0
         data = {"quantitiy":p, "sensor":"sensor1"}
-        headers = {"Authorization" : "Token e4f12115e54ab5a41465d282e8df778c9c4c094b"}
+        token_url = 'http://140.117.71.98:8000/user/login/'
+        token_data = {'username': 'admin', 'password': 'rootroot'}
+        res = rq.post(token_url, token_data)
+        res = json.loads(res.text)
+        headers= {'Authorization': res['token']}
         res = rq.post(battery_url, data = data, headers = headers)
         print("Power Percent:{:3.1f}%".format(p))
         print("\n")

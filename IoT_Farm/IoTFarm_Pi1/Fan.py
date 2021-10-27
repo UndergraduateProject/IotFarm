@@ -3,16 +3,12 @@ import requests as rq
 import RPi.GPIO as GPIO
 import time
 
-fan_pin = 24
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(fan_pin, GPIO.OUT)
-    
-#flag = 0
-#GPIO.output(fan_pin, flag)
-
-#socket
-sio = socketio.Client()
-sio.connect("http://140.117.71.98:4001")
+def init():
+    fan_pin = 24
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(fan_pin, GPIO.OUT)
+    sio = socketio.Client()
+    sio.connect("http://140.117.71.98:4001")
 
 @sio.on('connect')
 def on_connect():
@@ -51,6 +47,7 @@ def main():
 
 if __name__ == '__main__':
     try:
+        init()
         main()
 
     except KeyboardInterrupt:

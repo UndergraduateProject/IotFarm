@@ -53,7 +53,11 @@ def main():
     try:
         adc_value = readadc(photo_ch, SPICLK, SPIMOSI, SPIMISO, SPICS)
         # data = {"volume" : adc_value, sensor:"WaterSensor"}
-        # headers = {"Authorization" : "Token 5dbb9140a4a995ece1223cbc22343854b7e380f4"}
+        # token_url = 'http://140.117.71.98:8000/user/login/'
+        # token_data = {'username': 'admin', 'password': 'rootroot'}
+        # res = rq.post(token_url, token_data)
+        # res = json.loads(res.text)
+        # headers= {'Authorization': res['token']}
         #  rq.post(water_url, data) 回傳adc_value(水量)至API
         if adc_value == 0:
             print("no water\n")

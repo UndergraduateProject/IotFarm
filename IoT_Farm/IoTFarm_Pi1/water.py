@@ -7,20 +7,6 @@ from numpy import interp
 import socketio
 import RPi.GPIO as GPIO
 
-# 連結至SPI
-#spi = spidev.SpiDev()
-#spi.open(0, 0)
-
-# 設置水泵 & 繼電器
-pump_pin = 12  # GPIO23
-GPIO.setmode(GPIO.BCM)  # 編碼模式
-GPIO.setup(pump_pin, GPIO.OUT)  # 設為輸出口
-print("setup GPIO 12")
-sleeptime = 1 #rq.get()
-
-#socket
-sio = socketio.Client()
-
 @sio.on('connect')
 def on_connect():
     print('connection established')
@@ -49,4 +35,19 @@ def on_disconnect():
     print('disconnected from server')
 
 
-sio.connect("http://140.117.71.98:4001")
+def init_water():
+  # 設置水泵 & 繼電器
+  pump_pin = 12  # GPIO23
+  GPIO.setmode(GPIO.BCM)  # 編碼模式
+  GPIO.setup(pump_pin, GPIO.OUT)  # 設為輸出口
+  print("setup GPIO 12")
+  sleeptime = 1 #rq.get()
+
+  #socket
+  sio = socketio.Client()
+  sio.connect("http://140.117.71.98:4001")
+
+
+if __name__ == "__main__":
+  init()
+

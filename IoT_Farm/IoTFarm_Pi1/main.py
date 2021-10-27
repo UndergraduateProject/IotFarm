@@ -5,9 +5,11 @@ from YL69 import main as main_yl69
 from WaterSensor import main as main_ws
 from PowerPercent import main as main_pp
 from Fan import main as main_fan
-import water
+from Fan import init as init_fan
+from water import *
 import requests as rq
-#import LED
+import RPi.GPIO as GPIO
+#from LED import *
 #import socketio
 
 #sio = socketio.Client()
@@ -28,6 +30,10 @@ elif interval_minute:
 elif interval_second:
     interval = interval_second
     last = datetime.now() + timedelta(seconds=-interval)
+
+init_fan()
+#init_LED()
+init_water()
 
 while True:
     try:
