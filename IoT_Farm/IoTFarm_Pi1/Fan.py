@@ -40,9 +40,19 @@ def main():
         #print("currently in auto mode")
         if temp > 25:
             GPIO.output(fan_pin, 1)
+            msg = {
+                        'title': 'Automation',
+                        'body' : 'Fan just turned on'
+                    }
+            sio.emit('notification', msg)
             print("OPEN FAN")
         else:
             GPIO.output(fan_pin, 0)
+            msg = {
+                        'title': 'Automation',
+                        'body' : 'Fan just turned off'
+                    }
+            sio.emit('notification', msg)
 
 
 if __name__ == '__main__':

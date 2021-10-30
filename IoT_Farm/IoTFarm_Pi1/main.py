@@ -9,7 +9,7 @@ from Fan import init as init_fan
 from water import *
 import requests as rq
 import RPi.GPIO as GPIO
-#from LED import *
+from LED import *
 #import socketio
 
 #sio = socketio.Client()
@@ -32,7 +32,7 @@ elif interval_second:
     last = datetime.now() + timedelta(seconds=-interval)
 
 init_fan()
-#init_LED()
+init_LED()
 init_water()
 
 while True:
@@ -50,41 +50,37 @@ while True:
         elif interval_second:
             compare = result_second
 
-        try:
-            if compare >= interval:
-                main_dht22()
-                print("get dht22")
-        except RuntimeError as error:
-            print("dht22" , error.args[0])
-            print('\n')
-        try:
-            if compare >= interval:
-                main_yl69()
-                print('try watering')
-        except RuntimeError as error:
-            print("water", error.args[0])
-            print('\n')
-
-        try:
-            if compare>= interval:
-                main_ws()
-        except RuntimeError as error:
-            print("watersensor" , error.args[0])
-            print('\n')
-        try:
-            if compare>= interval:
-                main_pp()
-        except RuntimeError as error:
-            print("battery", error.args[0])
-            print('\n')
-        try:
-            if compare >= interval:
-                main_fan()
-        except RuntimeError as error:
-            print("fan", error.args[0])
-            print('\n')
         if compare >= interval:
             last = datetime.now()
+            try:
+                    main_dht22()
+                    print("get dht22")
+            except RuntimeError as error:
+                print("dht22" , error.args[0])
+                print('\n')
+            try:
+                    main_yl69()
+                    print('try watering')
+            except RuntimeError as error:
+                print("water", error.args[0])
+                print('\n')
+
+            try:
+                    main_ws()
+            except RuntimeError as error:
+                print("watersensor" , error.args[0])
+                print('\n')
+            try:
+                    main_pp()
+            except RuntimeError as error:
+                print("battery", error.args[0])
+                print('\n')
+            try:
+                    main_fan()
+            except RuntimeError as error:
+                print("fan", error.args[0])
+                print('\n')
+
 
     except KeyboardInterrupt:
         print("closing")

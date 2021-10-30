@@ -41,6 +41,11 @@ def main():
             time.sleep(5)
             GPIO.output(pump_pin, 0)
             timestamp = time.time()
+            msg = {
+                        'title': 'Automation',
+                        'body' : 'Watered plant'
+                    }
+            sio.emit('notification', msg)
         token_url = 'http://140.117.71.98:8000/user/login/'
         token_data = {'username': 'admin', 'password': 'rootroot'}
         res = rq.post(token_url, token_data)

@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+import requests as rq
 
 SPICLK = 21
 SPIMISO = 19
@@ -7,7 +8,7 @@ SPICS = 16
 photo_ch = 0
 # API URL
 water_url = "http://140.117.71.98:8000/api/WaterStorage/"
-
+condition_url = "http://140.117.71.98:8000/api/WarningCondition/7"
 
 def init():
     GPIO.setwarnings(False)
@@ -52,6 +53,15 @@ def main():
     init()
     try:
         adc_value = readadc(photo_ch, SPICLK, SPIMOSI, SPIMISO, SPICS)
+        res = rq.get(conditiion_url)
+        res = res.json()
+        condition = res['volume']
+        if adc_value <= condition:
+            msg = {
+                        'title': 'Warning',
+                        'body' : 'Water level is under' + str(condition)
+                    }
+            sio.emit('notification', msg)
         # data = {"volume" : adc_value, sensor:"WaterSensor"}
         # token_url = 'http://140.117.71.98:8000/user/login/'
         # token_data = {'username': 'admin', 'password': 'rootroot'}
