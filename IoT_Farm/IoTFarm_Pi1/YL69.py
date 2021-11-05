@@ -32,7 +32,8 @@ def main():
         print('土壤濕度:%.2f%%' % mois)
         res = rq.get(condition_url)  # 從API獲取condition
         conditon = res.json()['moisture']
-        if mois > conditon :  # 要改condition
+        status = res.json()['status']
+        if mois > conditon or status == 'OFF':  # 要改condition
             GPIO.output(pump_pin, 0)
             print('不澆水')
         else:

@@ -17,7 +17,6 @@ def on_message(data):
     if str(data) == "on":
       GPIO.setup(pump_pin, GPIO.OUT)
       GPIO.output(pump_pin, 1)
-      #sio.emit('water', "watering")
       time.sleep(2)
       print("after sleep")
       GPIO.output(pump_pin, 0)

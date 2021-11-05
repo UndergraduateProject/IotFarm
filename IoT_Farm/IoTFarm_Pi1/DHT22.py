@@ -14,8 +14,48 @@ dht22_url = 'http://140.117.71.98:8000/api/Humidtemp/'  # API URL
 token_url = 'http://140.117.71.98:8000/user/login/'
 humidity_url = 'http://140.117.71.98:8000/api/WarningCondition/5/'
 temperature_url = 'http://140.117.71.98:8000/api/WarningCondition/6/'
+water_url = 'http://140.117.71.98:8000/api/ActionCondition/2/'
+fan_url = 'http://140.117.71.98:8000/api/ActionCondition/3/'
 
 sio.connect("http://140.117.71.98:4001")
+
+def water(humid):
+    res = rq.get(water_url)  # 從API獲取condition
+    conditon = res.json()['humidity']
+    status = res.json()['status']
+    if humid > conditon or status == 'OFF':  # 要改condition
+        GPIO.output(pump_pin, 0)
+        print('不澆水')
+    else:
+        print('澆水')
+        GPIO.output(pump_pin, 1)
+        time.sleep(5)
+        GPIO.output(pump_pin, 0)
+        timestamp = time.time()
+        msg = {
+                'title': 'Automation',
+                'body' : 'Watered plant'
+            }
+        sio.emit('notification', msg)
+
+def fan(temp):
+    res = rq.get(fan_url)  # 從API獲取condition
+    conditon = res.json()['temperature']
+    status = res.json()['status']
+    if temp < conditon or status == 'OFF':  # 要改condition
+        GPIO.output(pump_pin, 0)
+        print('不澆水')
+    else:
+        print('澆水')
+        GPIO.output(pump_pin, 1)
+        time.sleep(5)
+        GPIO.output(pump_pin, 0)
+        timestamp = time.time()
+        msg = {
+                'title': 'Automation',
+                'body' : 'Opened fan'
+            }
+        sio.emit('notification', msg)
 
 
 def main():
@@ -34,12 +74,13 @@ def main():
         if dht22_humi and dht22_temp :
             while dht22_humi > 200 or dht22_humi < 0:
                 dht22_humi = DHT_SENSOR.humidity
-            dht22_humi = math.floor(dht22_humi * 100) / 100
             while dht22_temp > 50 or dht22_temp < 10:
                 dht22_temp = DHT_SENSOR.temperature
-
+            dht22_humi = math.floor(dht22_humi * 100) / 100
             dht22_temp = math.floor(dht22_temp * 100) / 100
             dht22_index = 1  # 幫我刪了 應該用不到
+            water(dht22_humi)
+            fan(dht22_temp)
             dht22_data = {'humidity': dht22_humi, 'temperature': dht22_temp, 'heatIndex': dht22_index, 'sensor': "DHT-22"}  # 同上 index應該用不到
             token_url = 'http://140.117.71.98:8000/user/login/'
             token_data = {'username': 'admin', 'password': 'rootroot'}
@@ -83,6 +124,9 @@ def main():
                         'body' : 'Temperature is lower than' + str(temp_cond)
                     }
                     sio.emit('notification', msg)
+
+        else:
+            print('Error reading value.')
 
     except RuntimeError as error:
         print(error.args[0])
