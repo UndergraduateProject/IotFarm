@@ -107,7 +107,7 @@ def main():
         token_data = {'username': 'admin', 'password': 'rootroot'}
         res = rq.post(token_url, token_data)
         res = json.loads(res.text)
-        headers= {'Authorization': res['token']}
+        headers= {'Authorization': 'Token '+ res['token']}
         res = rq.post(battery_url, data = data, headers = headers)
         print("Power Percent:{:3.1f}%".format(p))
         print("\n")

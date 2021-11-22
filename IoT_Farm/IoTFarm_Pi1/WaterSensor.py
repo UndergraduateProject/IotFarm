@@ -62,13 +62,13 @@ def main():
                         'body' : 'Water level is under' + str(condition)
                     }
             sio.emit('notification', msg)
-        # data = {"volume" : adc_value, sensor:"WaterSensor"}
-        # token_url = 'http://140.117.71.98:8000/user/login/'
-        # token_data = {'username': 'admin', 'password': 'rootroot'}
-        # res = rq.post(token_url, token_data)
-        # res = json.loads(res.text)
-        # headers= {'Authorization': res['token']}
-        #  rq.post(water_url, data) 回傳adc_value(水量)至API
+        data = {"volume" : adc_value, sensor:"WaterSensor"}
+        token_url = 'http://140.117.71.98:8000/user/login/'
+        token_data = {'username': 'admin', 'password': 'rootroot'}
+        res = rq.post(token_url, token_data)
+        res = json.loads(res.text)
+        headers= {'Authorization': 'Token '+res['token']}
+        rq.post(water_url, data = data, headers=headers) 
         if adc_value == 0:
             print("no water\n")
         elif 0 < adc_value < 30:
