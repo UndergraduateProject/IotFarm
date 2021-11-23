@@ -19,42 +19,42 @@ init_fan()
 init_LED()
 init_water()
 
-last = False
-
 while True:
     try:
         res = rq.get("http://140.117.71.98:8000/api/Sensor/sensor1/")
         interval = res.json()["interval"]
         interval_hour, interval_minute, interval_second = map(float, interval.split(':'))
+        last = False
         if interval_hour:
             interval = interval_hour
-            if last is False:
+            interval = interval*60*60
+            if last == False:
                 last = datetime.now() + timedelta(hours=-interval)
-            interval = interval*360
 
         elif interval_minute:
             interval = interval_minute
-            if last is False:
-                last = datetime.now() + timedelta(minutes=-interval)
             interval = interval*60
+            if last == False:
+                last = datetime.now() + timedelta(minutes=-interval)
 
         elif interval_second:
             interval = interval_second
-            if last is False :
+            if  False :
                 last = datetime.now() + timedelta(seconds=-interval)
         current = datetime.now()
         result = str(current-last)
         result_hour, result_minute, result_second = map(float, result.split(':'))
+        print(last)
+        print(interval)
         if interval_hour:
-            compare = result_hour*60*60
+            compare = result_hour
 
         elif interval_minute :
-            compare = result_minute*60
+            compare = result_minute
 
         elif interval_second:
             compare = result_second
-        
-        print(interval)
+
         if compare >= interval:
             last = datetime.now()
             try:

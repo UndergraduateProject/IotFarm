@@ -60,19 +60,19 @@ def main():
         res = rq.get(condition_url)
         res = res.json()
         condition = res['volume']
-        if adc_value <= condition:
+        if adc_value <= condition and res['status'] == "ON":
             msg = {
                         'title': 'Warning',
                         'body' : 'Water level is under' + str(condition)
                     }
             sio.emit('notification', msg)
-        data = {"volume" : adc_value, "sensor" : "WaterSensor"}
+        data = {"volume" : adc_value/2, "sensor" : "WaterSensor"}
         token_url = 'http://140.117.71.98:8000/user/login/'
         token_data = {'username': 'admin', 'password': 'rootroot'}
         res = rq.post(token_url, token_data)
         res = json.loads(res.text)
         headers= {'Authorization': 'Token ' + res['token']}
-        rq.post(water_url, data = data, headers=headers)
+        res = rq.post(water_url, data = data, headers=headers)
         if adc_value == 0:
             print("no water\n")
         elif 0 < adc_value < 30:
@@ -83,7 +83,6 @@ def main():
             adc_value = adc_value/200. * 10
             print(adc_value)
         data = {"volume" : adc_value, "sensor" : "WaterSensor"}
-        res = rq.post(water_url, data = data, headers = headers) #回傳adc_value(水量)至API
         print(res)
 
     except RuntimeError as error:

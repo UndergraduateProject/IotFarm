@@ -36,7 +36,6 @@ while True:
             interval = interval_minute
             if last is False:
                 last = datetime.now() + timedelta(minutes=-interval)
-            interval = interval*60
 
         elif interval_second:
             interval = interval_second
@@ -54,7 +53,6 @@ while True:
         elif interval_second:
             compare = result_second
         
-        print(interval)
         if compare >= interval:
             last = datetime.now()
             try:
