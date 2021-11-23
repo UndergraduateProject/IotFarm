@@ -15,21 +15,7 @@ from LED import *
 #sio = socketio.Client()
 
 # init
-start = time.time()
-res = rq.get("http://140.117.71.98:8000/api/Sensor/sensor1/")
-interval = res.json()["interval"]
-interval_hour, interval_minute, interval_second = map(float, interval.split(':'))
-if interval_hour:
-    interval = interval_hour
-    last = datetime.now() + timedelta(hours=-interval)
 
-elif interval_minute:
-    interval = interval_minute
-    last = datetime.now() + timedelta(minutes=-interval)
-
-elif interval_second:
-    interval = interval_second
-    last = datetime.now() + timedelta(seconds=-interval)
 
 init_fan()
 init_LED()
@@ -37,6 +23,20 @@ init_water()
 
 while True:
     try:
+        res = rq.get("http://140.117.71.98:8000/api/Sensor/sensor1/")
+        interval = res.json()["interval"]
+        interval_hour, interval_minute, interval_second = map(float, interval.split(':'))
+        if interval_hour:
+            interval = interval_hour
+            last = datetime.now() + timedelta(hours=-interval)
+
+        elif interval_minute:
+            interval = interval_minute
+            last = datetime.now() + timedelta(minutes=-interval)
+
+        elif interval_second:
+            interval = interval_second
+            last = datetime.now() + timedelta(seconds=-interval)
         current = datetime.now()
         result = str(current-last)
         result_hour, result_minute, result_second = map(float, result.split(':'))

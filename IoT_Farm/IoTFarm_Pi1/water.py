@@ -44,7 +44,6 @@ def init_water():
   GPIO.setmode(GPIO.BCM)  # 編碼模式
   GPIO.setup(pump_pin, GPIO.OUT)  # 設為輸出口
   print("setup GPIO 12")
-  sleeptime = 1 #rq.get()
 
 #socket
 #sio = socketio.Client()
