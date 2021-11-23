@@ -15,8 +15,6 @@ from LED import *
 #sio = socketio.Client()
 
 # init
-
-
 init_fan()
 init_LED()
 init_water()
@@ -28,15 +26,18 @@ while True:
         interval_hour, interval_minute, interval_second = map(float, interval.split(':'))
         if interval_hour:
             interval = interval_hour
-            last = datetime.now() + timedelta(hours=-interval)
+            if !last :
+                last = datetime.now() + timedelta(hours=-interval)
 
         elif interval_minute:
             interval = interval_minute
-            last = datetime.now() + timedelta(minutes=-interval)
+            if !last:
+                last = datetime.now() + timedelta(minutes=-interval)
 
         elif interval_second:
             interval = interval_second
-            last = datetime.now() + timedelta(seconds=-interval)
+            if !last :
+                last = datetime.now() + timedelta(seconds=-interval)
         current = datetime.now()
         result = str(current-last)
         result_hour, result_minute, result_second = map(float, result.split(':'))
