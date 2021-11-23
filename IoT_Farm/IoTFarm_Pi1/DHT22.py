@@ -16,7 +16,9 @@ humidity_url = 'http://140.117.71.98:8000/api/WarningCondition/5/'
 temperature_url = 'http://140.117.71.98:8000/api/WarningCondition/6/'
 water_url = 'http://140.117.71.98:8000/api/ActionCondition/2/'
 fan_url = 'http://140.117.71.98:8000/api/ActionCondition/3/'
+pump_pin = 12
 
+sio = socketio.Client()
 sio.connect("http://140.117.71.98:4001")
 
 def water(humid):
@@ -86,7 +88,7 @@ def main():
             token_data = {'username': 'admin', 'password': 'rootroot'}
             res = rq.post(token_url, token_data)
             res = json.loads(res.text)
-            headers= {'Authorization': res['token']}
+            headers= {'Authorization': 'Token ' +res['token']}
             print('溫度:%.2f°C' % dht22_temp)
             print('濕度:%.2f%%' % dht22_humi)
             res = rq.post(dht22_url, data=dht22_data, headers=headers)

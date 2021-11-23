@@ -102,13 +102,15 @@ def main():
             p = 100
         if p < 0:
             p = 0
-        data = {"quantitiy":p, "sensor":"sensor1"}
+        p = float(p)
+        data = {"quantity":p, "sensor":"sensor1"}
         token_url = 'http://140.117.71.98:8000/user/login/'
         token_data = {'username': 'admin', 'password': 'rootroot'}
         res = rq.post(token_url, token_data)
         res = json.loads(res.text)
-        headers= {'Authorization': res['token']}
+        headers= {'Authorization': 'Token ' + res['token']}
         res = rq.post(battery_url, data = data, headers = headers)
+        print(res)
         print("Power Percent:{:3.1f}%".format(p))
         print("\n")
     except RuntimeError as error:

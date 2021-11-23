@@ -7,12 +7,16 @@ from numpy import interp
 import socketio
 import RPi.GPIO as GPIO
 
+sio = socketio.Client()
+sio.connect("http://140.117.71.98:4001")
+
 @sio.on('connect')
 def on_connect():
     print('connection established')
 
 @sio.on("water")
 def on_message(data):
+    pump_pin = 12
     print('message received with ', data)
     if str(data) == "on":
       GPIO.setup(pump_pin, GPIO.OUT)
@@ -42,9 +46,9 @@ def init_water():
   print("setup GPIO 12")
   sleeptime = 1 #rq.get()
 
-  #socket
-  sio = socketio.Client()
-  sio.connect("http://140.117.71.98:4001")
+#socket
+#sio = socketio.Client()
+#sio.connect("http://140.117.71.98:4001")
 
 
 if __name__ == "__main__":

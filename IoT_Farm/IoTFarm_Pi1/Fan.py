@@ -4,11 +4,13 @@ import RPi.GPIO as GPIO
 import time
 
 def init():
-    fan_pin = 24
+    #fan_pin = 24
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(fan_pin, GPIO.OUT)
-    sio = socketio.Client()
-    sio.connect("http://140.117.71.98:4001")
+
+fan_pin = 24
+sio = socketio.Client()
+sio.connect("http://140.117.71.98:4001")
 
 @sio.on('connect')
 def on_connect():

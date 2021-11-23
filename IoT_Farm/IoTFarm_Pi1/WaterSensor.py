@@ -1,5 +1,7 @@
 import RPi.GPIO as GPIO
 import requests as rq
+import socketio
+import json
 
 SPICLK = 21
 SPIMISO = 19
@@ -9,6 +11,8 @@ photo_ch = 0
 # API URL
 water_url = "http://140.117.71.98:8000/api/WaterStorage/"
 condition_url = "http://140.117.71.98:8000/api/WarningCondition/7"
+sio = socketio.Client()
+sio.connect("http://140.117.71.98:4001")
 
 def init():
     GPIO.setwarnings(False)
@@ -53,7 +57,7 @@ def main():
     init()
     try:
         adc_value = readadc(photo_ch, SPICLK, SPIMOSI, SPIMISO, SPICS)
-        res = rq.get(conditiion_url)
+        res = rq.get(condition_url)
         res = res.json()
         condition = res['volume']
         if adc_value <= condition:
@@ -62,13 +66,11 @@ def main():
                         'body' : 'Water level is under' + str(condition)
                     }
             sio.emit('notification', msg)
-        # data = {"volume" : adc_value, sensor:"WaterSensor"}
-        # token_url = 'http://140.117.71.98:8000/user/login/'
-        # token_data = {'username': 'admin', 'password': 'rootroot'}
-        # res = rq.post(token_url, token_data)
-        # res = json.loads(res.text)
-        # headers= {'Authorization': res['token']}
-        #  rq.post(water_url, data) 回傳adc_value(水量)至API
+        token_url = 'http://140.117.71.98:8000/user/login/'
+        token_data = {'username': 'admin', 'password': 'rootroot'}
+        res = rq.post(token_url, token_data)
+        res = json.loads(res.text)
+        headers= {'Authorization': 'Token ' + res['token']}
         if adc_value == 0:
             print("no water\n")
         elif 0 < adc_value < 30:
@@ -76,6 +78,12 @@ def main():
             print("waterlevel low")
         elif 30 <= adc_value:
             print("water level:" + str("%.1f" % (adc_value / 200. * 100)) + "%\n")
+            adc_value = adc_value/200. * 10
+            print(adc_value)
+        data = {"volume" : adc_value, "sensor" : "WaterSensor"}
+        res = rq.post(water_url, data = data, headers = headers) #回傳adc_value(水量)至API
+        print(res)
+
     except RuntimeError as error:
         print(error.args[0])
         print('\n')

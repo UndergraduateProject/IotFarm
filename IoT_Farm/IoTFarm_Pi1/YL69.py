@@ -5,6 +5,7 @@ from numpy import interp
 import time
 import RPi.GPIO as GPIO
 import json
+import socketio
 
 spi = spidev.SpiDev()
 spi.open(0, 0)
@@ -14,7 +15,8 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(pump_pin, GPIO.OUT)
 yl69_url = 'http://140.117.71.98:8000/api/Moisture/'  # API URL
 condition_url = 'http://140.117.71.98:8000/api/ActionCondition/1/'  # condition's API route
-
+sio = socketio.Client()
+sio.connect("http://140.117.71.98:4001")
 
 def analogInput(channel):
     spi.max_speed_hz = 1350000
@@ -51,7 +53,7 @@ def main():
         token_data = {'username': 'admin', 'password': 'rootroot'}
         res = rq.post(token_url, token_data)
         res = json.loads(res.text)
-        headers= {'Authorization': res['token']}
+        headers= {'Authorization': 'Token ' + res['token']}
         res = rq.post(url=yl69_url, data=yl69_data, headers=headers)
         print(res)
         time.sleep(10)
