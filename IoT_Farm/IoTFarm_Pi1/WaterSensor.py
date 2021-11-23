@@ -66,7 +66,7 @@ def main():
                         'body' : 'Water level is under' + str(condition)
                     }
             sio.emit('notification', msg)
-        data = {"volume" : adc_value, sensor:"WaterSensor"}
+        data = {"volume" : adc_value, "sensor" : "WaterSensor"}
         token_url = 'http://140.117.71.98:8000/user/login/'
         token_data = {'username': 'admin', 'password': 'rootroot'}
         res = rq.post(token_url, token_data)

@@ -6,6 +6,7 @@ import spidev
 from numpy import interp
 import socketio
 import RPi.GPIO as GPIO
+import requests as rq
 
 sio = socketio.Client()
 sio.connect("http://140.117.71.98:4001")
@@ -18,14 +19,13 @@ def on_connect():
 def on_message(data):
     pump_pin = 12
     print('message received with ', data)
-    if str(data) == "on":
+    if str(data["status"]) == "on":
+      duration = data["volume"]/50
       GPIO.setup(pump_pin, GPIO.OUT)
       GPIO.output(pump_pin, 1)
-      time.sleep(2)
+      time.sleep(duration)
       print("after sleep")
       GPIO.output(pump_pin, 0)
-      time.sleep(5)
-      print("after off")
     
     elif str(data == "off"):
       sio.emit('water', "stopped")

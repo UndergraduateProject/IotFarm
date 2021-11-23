@@ -41,6 +41,7 @@ while True:
         result = str(current-last)
         result_hour, result_minute, result_second = map(float, result.split(':'))
         
+        print(interval)
         if interval_hour:
             compare = result_hour
 

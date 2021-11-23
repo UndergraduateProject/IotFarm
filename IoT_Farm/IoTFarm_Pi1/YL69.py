@@ -41,7 +41,7 @@ def main():
         else:
             print('澆水')
             GPIO.output(pump_pin, 1)
-            time.sleep(5)
+            time.sleep(2)
             GPIO.output(pump_pin, 0)
             timestamp = time.time()
             msg = {
