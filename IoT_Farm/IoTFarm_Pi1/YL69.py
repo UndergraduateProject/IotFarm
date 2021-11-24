@@ -4,16 +4,19 @@ import spidev
 from numpy import interp
 import time
 import RPi.GPIO as GPIO
+import json
+import socketio
 
 spi = spidev.SpiDev()
 spi.open(0, 0)
 
-pump_pin = 23
+pump_pin = 12
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(pump_pin, GPIO.OUT)
 yl69_url = 'http://140.117.71.98:8000/api/Moisture/'  # API URL
 condition_url = 'http://140.117.71.98:8000/api/ActionCondition/1/'  # condition's API route
-
+sio = socketio.Client()
+sio.connect("http://140.117.71.98:4001")
 
 def analogInput(channel):
     spi.max_speed_hz = 1350000
@@ -31,21 +34,29 @@ def main():
         print('土壤濕度:%.2f%%' % mois)
         res = rq.get(condition_url)  # 從API獲取condition
         conditon = res.json()['moisture']
-        if mois > conditon :  # 要改condition
+        status = res.json()['status']
+        if mois > conditon or status == 'OFF':  # 要改condition
             GPIO.output(pump_pin, 0)
             print('不澆水')
         else:
             print('澆水')
             GPIO.output(pump_pin, 1)
-            print("after 1 output")
-            time.sleep(5)
-            print("before 0 output")
+            time.sleep(2)
             GPIO.output(pump_pin, 0)
-            print("stop")
             timestamp = time.time()
-        headers = {"Authorization" : "Token e4f12115e54ab5a41465d282e8df778c9c4c094b"}
+            msg = {
+                        'title': 'Automation',
+                        'body' : 'Watered plant'
+                    }
+            sio.emit('notification', msg)
+        token_url = 'http://140.117.71.98:8000/user/login/'
+        token_data = {'username': 'admin', 'password': 'rootroot'}
+        res = rq.post(token_url, token_data)
+        res = json.loads(res.text)
+        headers= {'Authorization': 'Token ' + res['token']}
         res = rq.post(url=yl69_url, data=yl69_data, headers=headers)
         print(res)
+        time.sleep(10)
         print('\n')
     
     except RuntimeError as error:

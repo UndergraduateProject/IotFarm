@@ -5,13 +5,12 @@ from RpiMotorLib import RpiMotorLib
 import socketio
 import json
 import requests as rq
+import json
 
 GPIO_pins = (14, 15, 18)  # Microstep Resolution MS1-MS3 -> GPIO Pin
 direction = 20  # Direction -> GPIO Pin
 step = 21  # Step -> GPIO Pin
-position = 0
-# slide = 10
-url = 'http://140.117.71.98:8000/api/Track/'
+url = 'http://140.117.71.98:8000/api/Track/1/'
 res = rq.get(url)
 data = res.json()["results"]
 position = data[0]['position']
@@ -37,16 +36,22 @@ def on_disconnect():
 
 def move(slide, direction):
     global position
+    token_url = 'http://140.117.71.98:8000/user/login/'
+    token_data = {'username': 'admin', 'password': 'rootroot'}
+    res = rq.post(token_url, token_data)
+    res = json.loads(res.text)
+    headers= {'Authorization': res['token']}
     if str(direction) == "down":
         if position >= 1000:
             print('Cannot move on')
             print(position)
             sio.emit('slider', "Cannot move on")
         else:
-            mymotortest.motor_go(True, "Full", slide, 0.001, False, .05)
+            mymotortest.motor_go(True, "Full", slide, 0.01, False, .05)
             print(position)
             position = position + slide
-            res = rq.patch(url, position)
+            data = {'position': position}
+            res = rq.patch(url, data)
             sio.emit('slider', "Moving")
 
     if str(direction) == "up":
@@ -55,10 +60,10 @@ def move(slide, direction):
             print(position)
             sio.emit('slider', "Cannot move on")
         else:
-            mymotortest.motor_go(False, "Full", slide, 0.001, False, .05)
+            mymotortest.motor_go(False, "Full", slide, 0.01, False, .05)
             print(position)
-            position = position - slide
-            res = rq.patch(url, position)
+            data = {'position': position}
+            res = rq.patch(url, data)
             sio.emit('slider', "Moving")
 
 
